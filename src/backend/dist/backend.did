@@ -1,0 +1,265 @@
+type _CaffeineStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _CaffeineStorageRefillInformation = record {
+                                           proposed_top_up_amount: opt nat;};
+type _CaffeineStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type Wallet = 
+ record {
+   balance: nat;
+   transactions: vec Transaction;
+ };
+type UserRole__1 = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserRole = 
+ variant {
+   admin;
+   driver;
+   jobSeeker;
+   transporter;
+   truckOwner;
+ };
+type UserProfile = 
+ record {
+   approvalStatus: ApprovalStatus;
+   location: text;
+   name: text;
+   phone: text;
+   "principal": principal;
+   subscriptionPlan: SubscriptionPlan;
+   userRole: UserRole;
+ };
+type Truck = 
+ record {
+   assignedDriverId: opt principal;
+   fastagNumber: text;
+   insuranceDetails: text;
+   loadCapacity: nat;
+   ownerId: principal;
+   permitDetails: text;
+   photo: opt ExternalBlob;
+   truckNumber: text;
+   truckType: text;
+ };
+type TripStatus = 
+ variant {
+   accepted;
+   cancelled;
+   delivered;
+   inTransit;
+   loading;
+   pending;
+ };
+type Trip = 
+ record {
+   advanceAmountRs: nat;
+   agreedPriceRs: nat;
+   createdAt: int;
+   deliveryLocation: text;
+   distanceKm: nat;
+   driverId: text;
+   loadId: text;
+   paymentStatus: text;
+   pickupLocation: text;
+   remainingAmountRs: nat;
+   status: TripStatus;
+   truckId: text;
+ };
+type TransactionType = 
+ variant {
+   credit;
+   debit;
+ };
+type Transaction = 
+ record {
+   amount: nat;
+   description: text;
+   timestamp: int;
+   transactionType: TransactionType;
+ };
+type SubscriptionPlan = 
+ variant {
+   basic;
+   premium;
+   standard;
+ };
+type NotificationType = 
+ variant {
+   jobAlert;
+   loadAlert;
+   paymentUpdate;
+   tripUpdate;
+ };
+type Notification = 
+ record {
+   isRead: bool;
+   message: text;
+   notificationType: NotificationType;
+   timestamp: int;
+ };
+type LoadStatus = 
+ variant {
+   completed;
+   confirmed;
+   negotiating;
+   open;
+ };
+type LoadListing = 
+ record {
+   basePriceRs: nat;
+   deliveryLocation: text;
+   distanceKm: nat;
+   pickupLocation: text;
+   postedBy: principal;
+   status: LoadStatus;
+   truckTypeRequired: text;
+   weightTons: nat;
+ };
+type JobRoleType = 
+ variant {
+   driver;
+   helper;
+ };
+type JobPosting = 
+ record {
+   applicants: vec principal;
+   experienceRequired: nat;
+   location: text;
+   postedBy: principal;
+   roleType: JobRoleType;
+   salary: nat;
+   status: bool;
+   truckType: text;
+ };
+type Helper = 
+ record {
+   aadhaarVerified: bool;
+   assignedTruckId: opt text;
+   availabilityStatus: bool;
+   experienceYears: nat;
+   name: text;
+   ownerId: principal;
+   phone: text;
+   skills: text;
+ };
+type ExternalBlob = blob;
+type Driver = 
+ record {
+   aadhaarVerified: bool;
+   assignedTruckId: opt principal;
+   availabilityStatus: bool;
+   currentLocation: text;
+   emergencyContact: text;
+   experienceYears: nat;
+   licenseExpiry: int;
+   licenseNumber: text;
+   name: text;
+   ownerId: principal;
+   phone: text;
+ };
+type ApprovalStatus = 
+ variant {
+   approved;
+   blocked;
+   pending;
+ };
+service : {
+  _caffeineStorageBlobIsLive: (hash: blob) -> (bool) query;
+  _caffeineStorageBlobsToDelete: () -> (vec blob) query;
+  _caffeineStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _caffeineStorageCreateCertificate: (blobHash: text) ->
+   (_CaffeineStorageCreateCertificateResult);
+  _caffeineStorageRefillCashier: (refillInformation:
+   opt _CaffeineStorageRefillInformation) -> (_CaffeineStorageRefillResult);
+  _caffeineStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControlWithSecret: (userSecret: text) -> ();
+  addDriver: (name: text, phone: text, aadhaarVerified: bool, licenseNumber:
+   text, licenseExpiry: int, experienceYears: nat, currentLocation: text,
+   availabilityStatus: bool, emergencyContact: text) -> ();
+  addHelper: (name: text, phone: text, aadhaarVerified: bool, skills: 
+   text, experienceYears: nat, availabilityStatus: bool) -> ();
+  addNotification: (message: text, notificationType: NotificationType) -> ();
+  addTransaction: (amount: nat, transactionType: TransactionType,
+   description: text) -> ();
+  addTruck: (truckNumber: text, truckType: text, loadCapacity: nat,
+   insuranceDetails: text, permitDetails: text, fastagNumber: text, photo:
+   opt ExternalBlob) -> ();
+  applyForJob: (id: text) -> ();
+  approveUser: (user: principal) -> ();
+  assignCallerUserRole: (user: principal, role: UserRole__1) -> ();
+  blockUser: (user: principal) -> ();
+  closeJobPosting: (id: text) -> ();
+  createJobPosting: (id: text, roleType: JobRoleType, salary: nat, location:
+   text, experienceRequired: nat, truckType: text) -> ();
+  createLoadListing: (id: text, pickupLocation: text, deliveryLocation: 
+   text, distanceKm: nat, weightTons: nat, truckTypeRequired: text,
+   basePriceRs: nat) -> ();
+  createTrip: (id: text, loadId: text, truckId: text, driverId: text,
+   agreedPriceRs: nat, advanceAmountRs: nat, remainingAmountRs: nat,
+   paymentStatus: text, pickupLocation: text, deliveryLocation: text,
+   distanceKm: nat) -> ();
+  createUserProfile: (userRole: UserRole, name: text, phone: text, location:
+   text, subscriptionPlan: SubscriptionPlan) -> ();
+  createWallet: () -> ();
+  getAdminStats: () ->
+   (record {
+      activeTrips: nat;
+      pendingVerifications: nat;
+      totalUsers: nat;
+    }) query;
+  getAllJobPostings: () -> (vec JobPosting) query;
+  getAllLoads: () -> (vec LoadListing) query;
+  getAllTrips: () -> (vec Trip) query;
+  getAllUsers: () -> (vec UserProfile) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole__1) query;
+  getDriver: (user: principal) -> (Driver) query;
+  getHelper: (user: principal) -> (Helper) query;
+  getJobPosting: (id: text) -> (JobPosting) query;
+  getLoadListing: (id: text) -> (LoadListing) query;
+  getMyLoadListings: () -> (vec LoadListing) query;
+  getNotifications: () -> (vec Notification) query;
+  getPublicJobPostings: () -> (vec record {
+                                     text;
+                                     JobPosting;
+                                   }) query;
+  getPublicLoadListings: () -> (vec record {
+                                      text;
+                                      LoadListing;
+                                    }) query;
+  getTrip: (id: text) -> (Trip) query;
+  getTruck: (truckNumber: text) -> (Truck) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  getUserTrips: () -> (vec record {
+                             text;
+                             Trip;
+                           }) query;
+  getWallet: () -> (opt Wallet) query;
+  isCallerAdmin: () -> (bool) query;
+  markNotificationAsRead: (index: nat) -> ();
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  updateDriver: (user: principal, name: text, phone: text, aadhaarVerified:
+   bool, licenseNumber: text, licenseExpiry: int, experienceYears: nat,
+   currentLocation: text, availabilityStatus: bool, assignedTruckId:
+   opt principal, emergencyContact: text) -> ();
+  updateHelper: (user: principal, name: text, phone: text, aadhaarVerified:
+   bool, skills: text, experienceYears: nat, assignedTruckId: opt text,
+   availabilityStatus: bool) -> ();
+  updateLoadListing: (id: text, pickupLocation: text, deliveryLocation: 
+   text, distanceKm: nat, weightTons: nat, truckTypeRequired: text,
+   basePriceRs: nat, status: LoadStatus) -> ();
+  updateTripStatus: (id: text, status: TripStatus) -> ();
+  updateTruck: (truckNumber: text, truckType: text, loadCapacity: nat,
+   insuranceDetails: text, permitDetails: text, fastagNumber: text, photo:
+   opt ExternalBlob, assignedDriverId: opt principal) -> ();
+}

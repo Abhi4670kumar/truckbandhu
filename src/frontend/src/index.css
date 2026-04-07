@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Fonts ─────────────────────────────────────────────── */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2")
+    format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/assets/fonts/PlusJakartaSans[wght].woff2") format("woff2");
+  font-display: swap;
+  font-weight: 200 800;
+  font-style: normal;
+}
+
+/* ─── Design Tokens ─────────────────────────────────────── */
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Deep Navy Blue as primary */
+    --background: 0.97 0.008 250;
+    --foreground: 0.16 0.04 250;
+
+    --card: 1 0 0;
+    --card-foreground: 0.16 0.04 250;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.16 0.04 250;
+
+    /* Primary = Deep Blue */
+    --primary: 0.32 0.12 255;
+    --primary-foreground: 0.98 0 0;
+
+    /* Secondary = Orange */
+    --secondary: 0.65 0.2 42;
+    --secondary-foreground: 0.98 0 0;
+
+    --muted: 0.93 0.01 250;
+    --muted-foreground: 0.52 0.04 255;
+
+    /* Accent = Orange */
+    --accent: 0.65 0.2 42;
+    --accent-foreground: 0.98 0 0;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 0.88 0.02 250;
+    --input: 0.92 0.01 250;
+    --ring: 0.42 0.12 255;
+
+    /* Custom semantic tokens */
+    --success: 0.56 0.18 150;
+    --success-foreground: 0.98 0 0;
+    --warning: 0.78 0.19 80;
+    --warning-foreground: 0.15 0 0;
+    --info: 0.62 0.16 230;
+    --info-foreground: 0.98 0 0;
+
+    /* Charts */
+    --chart-1: 0.65 0.2 42;
+    --chart-2: 0.56 0.18 150;
+    --chart-3: 0.32 0.12 255;
+    --chart-4: 0.78 0.19 80;
+    --chart-5: 0.62 0.16 230;
+
+    /* Sidebar */
+    --sidebar: 0.22 0.07 260;
+    --sidebar-foreground: 0.95 0.02 250;
+    --sidebar-primary: 0.65 0.2 42;
+    --sidebar-primary-foreground: 0.98 0 0;
+    --sidebar-accent: 0.3 0.08 260;
+    --sidebar-accent-foreground: 0.95 0.02 250;
+    --sidebar-border: 0.32 0.07 260;
+    --sidebar-ring: 0.5 0.15 255;
+
+    /* Glass card overlay */
+    --glass-bg: 1 0 0 / 70%;
+    --glass-border: 0.88 0.02 250 / 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  }
+}
+
+/* ─── Utilities ─────────────────────────────────────────── */
+@layer utilities {
+  .glass-card {
+    background: oklch(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid oklch(var(--glass-border));
+    box-shadow: 0 4px 32px rgba(0, 30, 100, 0.08), 0 1px 4px
+      rgba(0, 30, 100, 0.06);
+  }
+
+  .nav-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.22 0.07 260) 0%,
+      oklch(0.18 0.09 265) 100%
+    );
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      135deg,
+      oklch(0.22 0.09 265 / 88%) 0%,
+      oklch(0.18 0.07 255 / 70%) 50%,
+      oklch(0.65 0.2 42 / 40%) 100%
+    );
+  }
+
+  .status-pending {
+    @apply bg-gray-100 text-gray-600 border-gray-200;
+  }
+  .status-accepted {
+    @apply bg-blue-100 text-blue-700 border-blue-200;
+  }
+  .status-loading {
+    @apply bg-orange-100 text-orange-700 border-orange-200;
+  }
+  .status-intransit {
+    @apply bg-purple-100 text-purple-700 border-purple-200;
+  }
+  .status-delivered {
+    @apply bg-green-100 text-green-700 border-green-200;
+  }
+  .status-cancelled {
+    @apply bg-red-100 text-red-700 border-red-200;
+  }
+
+  .bottom-nav-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ─── Animations ─────────────────────────────────────────── */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

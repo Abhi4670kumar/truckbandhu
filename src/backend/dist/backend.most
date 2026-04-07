@@ -1,0 +1,248 @@
+// Version: 3.0.0
+type ApprovalStatus__1072888826 = {#approved; #blocked; #pending};
+type ApprovalStatus__641045796 = {#approved; #blocked; #pending};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Driver__828185350 =
+  {
+    aadhaarVerified : Bool;
+    assignedTruckId : ?Principal;
+    availabilityStatus : Bool;
+    currentLocation : Text;
+    emergencyContact : Text;
+    experienceYears : Nat;
+    licenseExpiry : Int;
+    licenseNumber : Text;
+    name : Text;
+    ownerId : Principal;
+    phone : Text
+  };
+type ExternalBlob__140892883 = Blob;
+type Helper__207691655 =
+  {
+    aadhaarVerified : Bool;
+    assignedTruckId : ?Text;
+    availabilityStatus : Bool;
+    experienceYears : Nat;
+    name : Text;
+    ownerId : Principal;
+    phone : Text;
+    skills : Text
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type JobPosting__80450050 =
+  {
+    applicants : [Principal];
+    experienceRequired : Nat;
+    location : Text;
+    postedBy : Principal;
+    roleType : JobRoleType__647886261;
+    salary : Nat;
+    status : Bool;
+    truckType : Text
+  };
+type JobRoleType__647886261 = {#driver; #helper};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type LoadListing__835655968 =
+  {
+    basePriceRs : Nat;
+    deliveryLocation : Text;
+    distanceKm : Nat;
+    pickupLocation : Text;
+    postedBy : Principal;
+    status : LoadStatus__749003842;
+    truckTypeRequired : Text;
+    weightTons : Nat
+  };
+type LoadStatus__749003842 = {#completed; #confirmed; #negotiating; #open};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type NotificationType__754463539 =
+  {#jobAlert; #loadAlert; #paymentUpdate; #tripUpdate};
+type Notification__879889657 =
+  {
+    isRead : Bool;
+    message : Text;
+    notificationType : NotificationType__754463539;
+    timestamp : Int
+  };
+type OldUserProfile__416069324 =
+  {
+    approvalStatus : ApprovalStatus__641045796;
+    location : Text;
+    name : Text;
+    phone : Text;
+    principal : Principal;
+    subscriptionPlan : SubscriptionPlan__43417033;
+    userRole : OldUserRole__889293160
+  };
+type OldUserRole__889293160 = {#admin; #driver; #transporter; #truckOwner};
+type SubscriptionPlan__43417033 = {#basic; #premium; #standard};
+type SubscriptionPlan__552945260 = {#basic; #premium; #standard};
+type TransactionType__767491300 = {#credit; #debit};
+type Transaction__865268250 =
+  {
+    amount : Nat;
+    description : Text;
+    timestamp : Int;
+    transactionType : TransactionType__767491300
+  };
+type TripStatus__390562763 =
+  {#accepted; #cancelled; #delivered; #inTransit; #loading; #pending};
+type Trip__14129367 =
+  {
+    advanceAmountRs : Nat;
+    agreedPriceRs : Nat;
+    createdAt : Int;
+    deliveryLocation : Text;
+    distanceKm : Nat;
+    driverId : Text;
+    loadId : Text;
+    paymentStatus : Text;
+    pickupLocation : Text;
+    remainingAmountRs : Nat;
+    status : TripStatus__390562763;
+    truckId : Text
+  };
+type Truck__223919668 =
+  {
+    assignedDriverId : ?Principal;
+    fastagNumber : Text;
+    insuranceDetails : Text;
+    loadCapacity : Nat;
+    ownerId : Principal;
+    permitDetails : Text;
+    photo : ?ExternalBlob__140892883;
+    truckNumber : Text;
+    truckType : Text
+  };
+type UserProfile__491224006 =
+  {
+    approvalStatus : ApprovalStatus__1072888826;
+    location : Text;
+    name : Text;
+    phone : Text;
+    principal : Principal;
+    subscriptionPlan : SubscriptionPlan__552945260;
+    userRole : UserRole__599675725
+  };
+type UserRole__521596351 = {#admin; #guest; #user};
+type UserRole__599675725 =
+  {#admin; #driver; #jobSeeker; #transporter; #truckOwner};
+type Wallet__442667382 =
+  {balance : Nat; transactions : [Transaction__865268250]};
+actor ({
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__521596351>
+    };
+  stable drivers :
+    {
+      var root : Node__46230540<Principal, Driver__828185350>;
+      var size : Nat__490723111
+    };
+  stable helpers :
+    {
+      var root : Node__46230540<Principal, Helper__207691655>;
+      var size : Nat__490723111
+    };
+  stable jobPostings :
+    {
+      var root : Node__46230540<Text, JobPosting__80450050>;
+      var size : Nat__490723111
+    };
+  stable loadListings :
+    {
+      var root : Node__46230540<Text, LoadListing__835655968>;
+      var size : Nat__490723111
+    };
+  stable notifications :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<Notification__879889657>>;
+      var size : Nat__490723111
+    };
+  stable trips :
+    {
+      var root : Node__46230540<Text, Trip__14129367>;
+      var size : Nat__490723111
+    };
+  stable trucks :
+    {
+      var root : Node__46230540<Text, Truck__223919668>;
+      var size : Nat__490723111
+    };
+  in userProfiles : Map__605269027<Principal, OldUserProfile__416069324>;
+  stable wallets :
+    {
+      var root : Node__46230540<Principal, Wallet__442667382>;
+      var size : Nat__490723111
+    }
+}, {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__521596351>
+    };
+  stable drivers :
+    {
+      var root : Node__46230540<Principal, Driver__828185350>;
+      var size : Nat__490723111
+    };
+  stable helpers :
+    {
+      var root : Node__46230540<Principal, Helper__207691655>;
+      var size : Nat__490723111
+    };
+  stable jobPostings :
+    {
+      var root : Node__46230540<Text, JobPosting__80450050>;
+      var size : Nat__490723111
+    };
+  stable loadListings :
+    {
+      var root : Node__46230540<Text, LoadListing__835655968>;
+      var size : Nat__490723111
+    };
+  stable notifications :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<Notification__879889657>>;
+      var size : Nat__490723111
+    };
+  stable trips :
+    {
+      var root : Node__46230540<Text, Trip__14129367>;
+      var size : Nat__490723111
+    };
+  stable trucks :
+    {
+      var root : Node__46230540<Text, Truck__223919668>;
+      var size : Nat__490723111
+    };
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__491224006>;
+      var size : Nat__490723111
+    };
+  stable wallets :
+    {
+      var root : Node__46230540<Principal, Wallet__442667382>;
+      var size : Nat__490723111
+    }
+}) ;
